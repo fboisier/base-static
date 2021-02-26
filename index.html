@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de uso de distintos plugings de jquery</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/css/toastr.min.css">
+    <link rel="stylesheet" href="static/css/tipped.css" />
+    <link rel="stylesheet" href="static/css/datatables.min.css" />
+
+    <script src="static/js/jquery-3.5.1.min.js"></script>
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/toastr.min.js"></script>
+    <script src="static/js/bootbox.min.js"></script>
+    <script src="static/js/moment-with-locales.min.js"></script>
+    <script src="static/js/tipped.min.js"></script>
+    <script src="static/js/pdfmake.min.js"></script>
+    <script src="static/js/vfs_fonts.js"></script>
+    <script src="static/js/datatables.min.js"></script>
+
+
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            moment.locale("es");
+
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+            }
+            bootbox.addLocale("pancho", {
+                OK: 'Aceptar',
+                CANCEL: 'Cancelar',
+                CONFIRM: 'Confirmar'
+            });
+
+
+            toastr.info("Esto es un uso de Toastr con MOMENTS: <br>" + moment().format('LLLL'), "Esto es un TITULO");
+
+            $(".btnBoton").on("click", function () {
+                // bootbox.confirm("Seguro que deseas hacer esto?", function(result){ 
+                //     if(result)
+                //         toastr.success("EXITO!");
+                //     else
+                //         toastr.warning("OJO! hiciste clic en cancelar.");
+
+                // });
+
+
+                bootbox.confirm({
+                    message: "Seguro que deseas hacer esto?",
+                    locale: "pancho",
+                    callback: function (result) {
+
+                        if (result)
+                            toastr.success("EXITO!");
+                        else
+                            toastr.warning("OJO! hiciste clic en cancelar.");
+                    }
+                });
+
+
+            });
+
+
+            // Uso de la herramienta: en la etiqueta agregar atributo 
+            // AYUDA y colocar clase "tooltip-tipped"
+            Tipped.create('.tooltip-tipped', function (element) {
+                return {
+                    title: "Ayuda en Pantalla",
+                    content: $(element).attr('ayuda')
+                };
+            }, {
+                skin: 'light',
+            }
+            );
+
+
+
+            let htmlDataTable = "<'row'<'col-sm-12 col-md-8'lB><'col-sm-12 col-md-4'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+            // el archivo spanish será tomado solo si es desde un servidor (probar con live server)
+            $('#tabla').DataTable({
+                language: {
+                    url: "static/js/Spanish.json"
+                },
+                responsive: true,
+                dom: htmlDataTable,
+                buttons: [
+                    'copy', 'excel', 'pdf'
+                ]
+            });
+
+
+            $(".demoToastr").on("click", function () {
+                toastr.info("Esto es un mensaje de demostración");
+            });
+
+            $(".demoHacerAlgo").on("click", function () {
+                toastr.info("Esto hacer algo");
+                $("#modal2").modal("hide");
+            });
+
+
+            $(".demoModal2").on("click", function () {
+                $("#modal2").modal("show");
+            });
+            $(".demoModal").on("click", function () {
+                $("#modal").modal("show");
+            });
+
+
+            $(".demoBootbox").on("click", function () {
+                bootbox.alert("Mensaje de prueba con bootbox.js <br>" + moment().format('LLLL'));
+            });
+
+            $("#hora").html(moment().format('Do MMMM YYYY, h:mm:ss a'));
+            // setInterval ejecuta la instruccion que tenga dentro cada X milisegundos.
+            // en este caso cada 1 segundo le pido que actualice la etiqueta que tiene el id hora.
+            setInterval(() => {
+                $("#hora").html(moment().format('Do MMMM YYYY, h:mm:ss a'));
+            }, 1000);
+
+        });
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col">
+
+                <div class="jumbotron">
+                    <h1 class="display-3"><i class="fa fa-snowflake-o fa-spin" aria-hidden="true"></i> Ejemplos de Uso
+                    </h1>
+                    <p class="lead">Favor copiar y pegar con toda confianza.</p>
+                    <hr class="my-2">
+                    <p>Esta es una pagina de ejemplo para demostrar el uso de las siguietes herramientas</p>
+                    <ol>
+                        <li>Toastr.js: Para mostrar mensajes flotantes como <span class="text-info demoToastr">este (haz
+                                clic)</span> (<a target="_blank"
+                                href="https://codeseven.github.io/toastr/demo.html">Documentación</a>)</li>
+                        <li>DataTables: Para mostrar tablas como la de abajo <i class="fa fa-arrow-down"
+                                aria-hidden="true"></i>
+                            (<a target="_blank" href="https://datatables.net/">Documentación</a>)</li>
+                        <li>Tipped.js: Para mostrar ayuda como esta <span class="text-info tooltip-tipped"
+                                ayuda="esto es una pantalla de ayuda">(poner mouse acá)</span> (<a target="_blank"
+                                href="https://www.tippedjs.com/">Documentación</a>)</li>
+                        <li>Bootbox.js: Herramienta que ocupa los estilos de bootstrap para mostrar mensajes.<span
+                                class="text-info demoBootbox">como este (haz clic)</span> (<a target="_blank"
+                                href="https://tiesont.github.io/bootbox/examples.html">Documentación</a>)</li>
+                        <li>Moment.js: para el uso de fechas: <span id="hora"></span> (<a target="_blank"
+                                href="https://momentjs.com/">Documentación</a>)</li>
+                        <li>Bootstrap Modal : Para el uso de modal como este <span class="text-info demoModal2">(clic
+                                acá)</span> (<a target="_blank"
+                                href="https://getbootstrap.com/docs/4.6/components/modal/">Documentación</a>)
+                        </li>
+                        <li>Font Awesome (css) : Para el uso de iconos como estos <span
+                                class="text-info demoModal">(clic
+                                acá)</span> (<a target="_blank"
+                                href="https://fontawesome.com/v4.7.0/icons/">Documentación</a> -
+                            <a href="https://fontawesome.com/v4.7.0/examples/">Ejemplos</a>)
+                        </li>
+
+
+                    </ol>
+                    <p class="lead">
+                        <button class="btn btn-primary btn-lg btnBoton tooltip-tipped"
+                            ayuda="Esto es una ayuda">Boton</button>
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+
+            <div class="col">
+
+                <table id="tabla" class="table table-sm table-striped table-hover table-bordered ">
+                    <thead>
+                        <tr>
+                            <th data-priority="1">id</th>
+                            <th>nombre</th>
+                            <th>rut</th>
+                            <th>telefono</th>
+                            <th>direccion</th>
+                            <th>correo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Colorado</td>
+                            <td>33060386-0</td>
+                            <td>(164) 891-1294</td>
+                            <td>P.O. Box 792, 2106 Sit Street</td>
+                            <td>enim.Nunc@parturient.org</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Wade</td>
+                            <td>21761180-6</td>
+                            <td>(830) 564-1523</td>
+                            <td>6333 Interdum Av.</td>
+                            <td>tincidunt.Donec@musProin.ca</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Ralph</td>
+                            <td>9268617-5</td>
+                            <td>(375) 283-9596</td>
+                            <td>Ap #712-2487 Est. Avenue</td>
+                            <td>feugiat.Sed@laciniamattis.org</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Jelani</td>
+                            <td>35867449-6</td>
+                            <td>(263) 330-7251</td>
+                            <td>Ap #755-2560 Dolor. Ave</td>
+                            <td>non.enim.Mauris@ametrisus.ca</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Travis</td>
+                            <td>25158693-4</td>
+                            <td>(996) 176-9663</td>
+                            <td>Ap #740-3731 Lorem St.</td>
+                            <td>elit.erat.vitae@leoelementum.net</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Lars</td>
+                            <td>47785822-8</td>
+                            <td>(222) 648-8869</td>
+                            <td>7589 Commodo St.</td>
+                            <td>Duis.at@semper.com</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Cullen</td>
+                            <td>44085110-K</td>
+                            <td>(337) 233-6032</td>
+                            <td>Ap #162-230 Donec Av.</td>
+                            <td>In.nec@diameudolor.net</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Gavin</td>
+                            <td>22677614-1</td>
+                            <td>(991) 354-8247</td>
+                            <td>P.O. Box 744, 2394 In, Rd.</td>
+                            <td>in.tempus.eu@acurna.edu</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Lev</td>
+                            <td>10944580-0</td>
+                            <td>(397) 867-6762</td>
+                            <td>427-1328 Duis Rd.</td>
+                            <td>ultricies.ornare.elit@velit.co.uk</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Gil</td>
+                            <td>45983085-5</td>
+                            <td>(398) 586-1299</td>
+                            <td>P.O. Box 822, 507 Ac Rd.</td>
+                            <td>lacus.Etiam.bibendum@mattisCraseget.ca</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <div id="modal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Iconos Demo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+
+
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-address-book" aria-hidden="true"></i>
+                        </div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-address-book-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-address-card" aria-hidden="true"></i>
+                        </div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-address-card-o" aria-hidden="true"></i>
+                        </div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-bandcamp" aria-hidden="true"></i></div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-bath" aria-hidden="true"></i></div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-bathtub" aria-hidden="true"></i> </div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-drivers-license"
+                                aria-hidden="true"></i></div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-drivers-license-o"
+                                aria-hidden="true"></i></div>
+                        <div class="fa-hover col-md-3 col-sm-4"> <i class="fa fa-eercast" aria-hidden="true"></i></div>
+
+
+                        <h6>Para ver más iconos ver la <a target="_blank"
+                                href="https://fontawesome.com/v4.7.0/icons/">documentación</a> </h6>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Esto es el titulo del modal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Aca es posible agregar el contenido del modal</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary demoHacerAlgo">Hacer Algo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
